@@ -2,21 +2,80 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom">
   <id>http://localhost:4000/</id>
-  <title>Chirpy</title>
+  <title>XinZai</title>
   <subtitle>A minimal, responsive and feature-rich Jekyll theme for technical writing.</subtitle>
-  <updated>2023-04-12T09:39:46+08:00</updated>
+  <updated>2023-04-12T15:46:40+08:00</updated>
   <author>
-    <name>your_full_name</name>
+    <name>XinZai</name>
     <uri>http://localhost:4000/</uri>
   </author>
   <link rel="self" type="application/atom+xml" href="http://localhost:4000/feed.xml"/>
   <link rel="alternate" type="text/html" hreflang="en"
     href="http://localhost:4000/"/>
   <generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator>
-  <rights> © 2023 your_full_name </rights>
+  <rights> © 2023 XinZai </rights>
   <icon>/assets/img/favicons/favicon.ico</icon>
   <logo>/assets/img/favicons/favicon-96x96.png</logo>
 
+
+  
+  <entry>
+    <title>C primer plus Notes</title>
+    <link href="http://localhost:4000/posts/C-primer-plus-notes-12/" rel="alternate" type="text/html" title="C primer plus Notes" />
+    <published>2023-04-06T18:10:36+08:00</published>
+  
+    <updated>2023-04-06T18:10:36+08:00</updated>
+  
+    <id>http://localhost:4000/posts/C-primer-plus-notes-12/</id>
+    <content src="http://localhost:4000/posts/C-primer-plus-notes-12/" />
+    <author>
+      <name>XinZai</name>
+    </author>
+
+  
+    
+    <category term="C" />
+    
+  
+
+  
+    <summary>
+      
+
+
+
+
+
+      C primer plus Notes
+
+12 存储类别、链接和内存管理
+
+关键字：auto，extern，static, register, const, volatile, restricted, _Thread_local, _Atomic
+
+函数：rand(), srand(), time(), malloc(), free()
+
+12.1存储类别
+
+C语言把一块内存称为 对象
+
+int entity = 3
+
+
+该声明创建了一个名为entity的 标识符（identifier）。
+
+标识符不是指定对象的唯一途径。
+
+int *pt = &amp;amp;entity;
+int ranks[10];
+
+
+可以用存储期（Storage duration）描述对象，指对象在内存中保留了多次时间。
+
+标识符用于访问对象，可以用作用域(scope)和链接（linkage）描述标识符，表明程序...
+    </summary>
+  
+
+  </entry>
 
 </feed>
 
