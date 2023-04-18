@@ -52,7 +52,7 @@
 <meta property="twitter:title" content="C primer plus Notes" />
 <meta name="twitter:site" content="@twitter_username" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-04-06T18:10:36+08:00","datePublished":"2023-04-06T18:10:36+08:00","description":"C primer plus Notes","headline":"C primer plus Notes","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/C-primer-plus-notes-12/"},"url":"http://localhost:4000/posts/C-primer-plus-notes-12/"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-04-12T16:21:04+08:00","datePublished":"2023-04-06T18:10:36+08:00","description":"C primer plus Notes","headline":"C primer plus Notes","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/posts/C-primer-plus-notes-12/"},"url":"http://localhost:4000/posts/C-primer-plus-notes-12/"}</script>
 <!-- End Jekyll SEO tag -->
 
   
@@ -690,6 +690,26 @@
 
     <!-- lastmod date -->
     
+    <span>
+      Updated
+      <!--
+  Date format snippet
+  See: ${JS_ROOT}/utils/locale-dateime.js
+-->
+
+
+
+
+
+<em class=""
+    data-ts="1681287664"
+    data-df="ll"
+    data-toggle="tooltip" data-placement="bottom">
+  Apr 12, 2023
+</em>
+
+    </span>
+    
 
   
 
@@ -731,7 +751,7 @@
 
 <!-- return element -->
 <span class="readtime" data-toggle="tooltip" data-placement="bottom"
-  title="1821 words">
+  title="1848 words">
   <em>10 min</em> read</span>
 
     </div>
@@ -753,16 +773,23 @@
 
 <p>C语言把一块内存称为 <strong>对象</strong></p>
 
-<pre><code class="language-C">int entity = 3
-</code></pre>
+<div class="language-c highlighter-rouge"><div class="code-header">
+        <span data-label-text="C"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="kt">int</span> <span class="n">entity</span> <span class="o">=</span> <span class="mi">3</span>
+</pre></td></tr></tbody></table></code></div></div>
 
 <p>该声明创建了一个名为entity的 <strong>标识符（identifier）</strong>。</p>
 
 <p>标识符不是指定对象的唯一途径。</p>
 
-<pre><code class="language-C">int *pt = &amp;entity;
-int ranks[10];
-</code></pre>
+<div class="language-c highlighter-rouge"><div class="code-header">
+        <span data-label-text="C"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="kt">int</span> <span class="o">*</span><span class="n">pt</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">entity</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">ranks</span><span class="p">[</span><span class="mi">10</span><span class="p">];</span>
+</pre></td></tr></tbody></table></code></div></div>
 
 <p>可以用<strong>存储期（Storage duration）</strong>描述对象，指对象在内存中保留了多次时间。</p>
 
@@ -782,12 +809,19 @@ int ranks[10];
 
 <p><strong>文件作用域(file scope)</strong> 变量的定义在函数的外面，也称为<strong>全局变量（global variable）</strong> ,如以下代码中的units变量。</p>
 
-<pre><code class="language-C">#include &lt;stdio.h&gt;
-int units = 0; 
-int main(void){
-    ...
-}
-</code></pre>
+<div class="language-c highlighter-rouge"><div class="code-header">
+        <span data-label-text="C"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="kt">int</span> <span class="n">units</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> 
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">){</span>
+    <span class="p">...</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></div></div>
 
 <p><strong>翻译单元（translation units）</strong> ：编译器把源代码中的头文件内容替换#include指令，因此一个源代码和其头文件共同构成一个翻译单元，文件作用域实际上作用于整个翻译单元。如果程序由多个源代码文件组成，那么该程序也将由多个翻译单元组成。</p>
 
@@ -821,14 +855,23 @@ int main(void){
 <p><strong>自动存储期</strong>：大部分 块作用域 的变量。当程序进入定义这些变量的块时，为这些变量分配内存;当退出这个块时，释放刚才为变量分配的内存。这种做法相当于把自动变量占用的内存视为一个可重复使用的工作区或暂存区。例如，一个函数调用结束后，其变量占用的内存可用于储存下一个被调用函数的变量。变长数组稍有不同，它们的存储期从声明处到块的末尾，而不是从块的开始处到块的末尾。</p>
 
 <p>块作用域变量也能具有静态存储期。为了创建这样的变量，要把变量声明在块中，且在声明前面加上关键字static，例如以下代码：</p>
-<pre><code class="language-C">void more(int number)
-{
-    int index;
-    static int ct = 0; //ct变量具有静态存储期，因为命名时有static
-    ...
-    return 0;
-}
-</code></pre>
+<div class="language-c highlighter-rouge"><div class="code-header">
+        <span data-label-text="C"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="kt">void</span> <span class="nf">more</span><span class="p">(</span><span class="kt">int</span> <span class="n">number</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">index</span><span class="p">;</span>
+    <span class="k">static</span> <span class="kt">int</span> <span class="n">ct</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">//ct变量具有静态存储期，因为命名时有static</span>
+    <span class="p">...</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></div></div>
 <p><code class="language-plaintext highlighter-rouge">ct</code>的作用域没有发生改变，只有执行该函数时，程序才能使用<code class="language-plaintext highlighter-rouge">ct</code>访问其对象。但由于具有静态存储期，该函数可以通过提供给其他函数该存储区的地址，就可以访问该对象，例如通过指针形参或返回值）。</p>
 
 <p>作用域、链接和存储期互相组合，具有5种存储类别（除去并发程序设计）。</p>
@@ -901,19 +944,33 @@ int main(void){
 
 <p>如果块的内层和外层定义了同名的变量，在内层块会隐藏外层快的定义。但是离开内层块后，外层块的作用域回到原来的作用域。</p>
 
-<pre><code class="language-C">#include &lt;stdio.h&gt;
-int x = 30;
-int main()
-{
-    while(x ++ &lt;33)
-    {
-        int x = 100;
-        x ++;
-        printf("x in while loop: %d at %p\n", x, &amp;x)
-    }
-    printf("x in outer block: %d at %p\n", x, &amp;x);
-}
-</code></pre>
+<div class="language-c highlighter-rouge"><div class="code-header">
+        <span data-label-text="C"><i class="fas fa-code small"></i></span>
+      <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre></td><td class="rouge-code"><pre><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">x</span> <span class="o">++</span> <span class="o">&lt;</span><span class="mi">33</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">100</span><span class="p">;</span>
+        <span class="n">x</span> <span class="o">++</span><span class="p">;</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"x in while loop: %d at %p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"x in outer block: %d at %p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">x</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></div></div>
 
 
 </div>
@@ -1030,6 +1087,20 @@ int main()
 
 
 
+
+
+
+  <div id="access-lastmod" class="post">
+    <div class="panel-heading">Recently Updated</div>
+    <ul class="post-content pl-0 pb-1 ml-1 mt-2">
+      
+        
+        
+        
+      <li><a href="/posts/C-primer-plus-notes-12/">C primer plus Notes</a></li>
+      
+    </ul>
+  </div> <!-- #access-lastmod -->
 
 
 
