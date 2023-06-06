@@ -267,3 +267,13 @@ double *ptd;
 ptd = (double *) malloc(30 * sizeof(double));
 ```
 
+malloc()可以用来定义一个变长数组。如
+
+```c
+double *ptd;
+ptd = (double *) malloc(n * sizeof(double)); /*n是整型变量*/
+```
+free()用来释放malloc()申请的内存，它的参数是一个指针，指向由malloc()分配的一块内存。如果malloc()调用内存失败，会返回一个空指针。可以调用exit()函数结束程序，malloc()和free()的原型都在stdlib.h头文件中。
+
+
+
