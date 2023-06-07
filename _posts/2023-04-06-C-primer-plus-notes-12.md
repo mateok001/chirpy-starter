@@ -473,13 +473,59 @@ for (n = 0; n < 10; n++)
 ```
 以上例子中，restar使用了`restric`关键词，指针是唯一且初始访问数据的方式，因此后面的for循环中，编译器可以合并对restar的操作，变成`restar[n] += 8`。
 
-par和ar都可以操作同一个数据内容，不能使用restrict，因此也不会优化。
+par和ar都可以操作同一个数据内容，不能使用`restrict`，因此也不会优化。
 
 `restrict`限定符还可用于函数形参中的指针。这意味着编译器可以假定在函数体内其他标识符不会修改该指针指向的数据，而且编译器可以尝试对其优化，使其不做别的用途。
 
 例如，C 库有两个函数用于把一个位置上的字节拷贝到另一个位置。在C99中，这两个函数的原型是:
 
+```c
+void memcpy(void * restrict s1, const void * restrict s2, size_t n);
+//把s2位置的字节移动到s1，但是要求s1、s2不能是同一位置
+void memmove(void * s1, const void * s2, size_t n);
+//把s2位置的字节移动到s1，s1、s2可以是同一位置
+```
+
+`restrict`有两个读者，一是告知编译器是否进行优化，二是告知用户要使用满足`restrict`的参数。
+
 ### 12.5.4 _Atomic类型限定符（C11）
+
+并发程序设计把程序执行分成可以同时执行的多个线程。
+
+CI1通过包含可选的头文件 stdatomic.h和 threads.h，提供了一些可选的管理方法，通过各种宏函数来访问原子类型。
+
+```c
+#include stdatomic.h
+#include threads.h
+
+int hogs;//普通声明变量方法
+hogs = 5;//可以进行直接赋值
+
+_Atomic int hogs2;//hogs2是原子类型的变量
+atomic_store(&hogs2, 12);//stdatomic中的宏
+//在这里，其他线程不能访问hogs。
+```
+原子类型要求编译器支持这一新特性。
+
+### 12.5.5 旧关键字的新位置
+
+C99允许类型限定符和存储类别说明符static放在函数原型和函数头的形参的初始中括号中。
+
+```c
+void ofmouth(int * const a1, int * restrict a2, int n);
+//旧的语法如上
+
+void ofmouth(int a1[const], int a2[restrict], int n);
+//C99允许新的语法
+```
+
+static的情况则有些不同。
+
+```c
+double stick(double ar[static 20]);
+//函数调用中的实参应该是一个指向数组首元素的指针，且该数组至少有20个元素。
+//便于编译器使用相关信息优化函数的编码。
+```
 
 
 
