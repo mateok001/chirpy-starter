@@ -258,22 +258,228 @@ unsigned int rand0(void)
 ### 12.4 分配内层：malloc()和free()
 
 用库函数可以更灵活地分配和管理内存。
-malloc()分配内存，不进行命名，只返回内存块的首字节地址。因此，可以把该地址赋值给一个指针变量，并使用指针访问该内存。
+`malloc()`分配内存，不进行命名，只返回内存块的首字节地址。因此，可以把该地址赋值给一个指针变量，并使用指针访问该内存。
 
-malloc()接受一个参数，分配内存的字节数。
+`malloc()`接受一个参数，分配内存的字节数。
 
 ```c
 double *ptd;
 ptd = (double *) malloc(30 * sizeof(double));
 ```
 
-malloc()可以用来定义一个变长数组。如
+`malloc()`可以用来定义一个变长数组。如
 
 ```c
 double *ptd;
 ptd = (double *) malloc(n * sizeof(double)); /*n是整型变量*/
 ```
-free()用来释放malloc()申请的内存，它的参数是一个指针，指向由malloc()分配的一块内存。如果malloc()调用内存失败，会返回一个空指针。可以调用exit()函数结束程序，malloc()和free()的原型都在stdlib.h头文件中。
+`free()`用来释放`malloc()`申请的内存，它的参数是一个指针，指向由`malloc()`分配的一块内存。如果`malloc()`调用内存失败，会返回一个空指针。可以调用`exit()`函数结束程序，`malloc()`和`free()`的原型都在stdlib.h头文件中。
+
+### 12.4.1 free()的重要性
+
+如果调用`malloc()`而没有使用`free()`进行内存释放，会造成内存泄漏。
+
+```c
+int main()
+{
+    double glad[2000];
+    int i;
+    ...
+    for (i<0; i<1000; i++)
+        gobble(glad, 2000);
+}
+void gobble
+{
+    double *temp = (double *) malloc( n * sizeof(double))
+    .../* free(temp) ; //假设忘记了free */
+}
+```
+每次调用gobble函数，都会请求2000个double的内存空间，并且函数块运行结束后，temp指针随着内存释放而被自动销毁，但申请的内存还在，却已经无法通过temp访问。再次调用，又会生成新的2000个double的内存空间。
+
+### 12.4.2 calloc()函数
+
+分配内存还可以使用`calloc()`函数，接收2个无符号整数作为参数。`calloc()`函数的特性是把块中所有的位设置为0。
+
+```c
+long *newmem;
+newmem = (long *) calloc(100, sizeof(long));
+```
+
+### 12.4.3 动态内存分配和变长数组
+
+动态内存分配`malloc()`和变长数组VLA功能上有些重合。（C99之后的编译器）
+
+不同的是，变长数组是自动存储类型，程序在离开变长数组定义所在的块时内存会自动释放。另一方面，用`malloc()`创建的数组不必局限于在同一个函数内访问。被调函数创建数组并返回指针，主调函数访问也是可以的并控制`free()`来释放内存也是可以的。
+
+`free()`用的指针变量和`malloc()`的指针变量可以不同，但是必须存储相同的地址。不能用`free()`释放同一块内存两次。
+
+对多维数组而言，使用变长数组比较方便，用`malloc()`创建二维数组也可以，但是语法比较繁琐。
+
+```c
+int n = 5;
+int m = 6;
+int ar2[n][m]; //n*m的变长数组
+int (*p3)[m];
+p3 = (int (*)[m]) malloc( n * m * sizeof(int));
+ar2[1][2] = p3[1][2] = 12;
+```
+### 12.4.4 存储类别和动态内存分配
+
+程序把静态对象、自动对象和动态分配的对象储存在不同的区域。
+
+静态对象所用的内存数量在编译时确定，程序结束时被销毁。
+
+自动对象根据块定义而增加或减少内存的使用，通常作为栈来处理。
+
+动态分配`malloc()`在调用`free()`时内存才被销毁，所以内存分配支离破碎，使用动态内存通常比使用栈内存慢。
+
+见12.15 where.c程序，静态数据（包括字符串字面量）占用一个区域，自动数据占用一个区域，动态分配的数据占用一个区域（通常称为内存堆或自由内存）。
+
+## 12.5 ANSI C 类型限定符
+
+除了类型和存储类别外，C90新增了两个属性：恒常性(constancy)和易变性(volatile)，关键字是`const`和`volatile`，其创建的类型为限定类型。C99又新增了`restrict`。C11新增了`_Atomic`，提供了一个可选库，由stdatomic.h管理，支持并发设计，是可选项。
+
+C99后，类型限定符是幂等的，一次声明多个限定符，多余的会被自动忽略。
+
+```c
+const const const int n = 6; //等同于const int n = 6;
+```
+
+### 12.5.1 const类型限定符
+
+`const`关键字声明的变量值不能被修改。
+
+```c
+const int nochange = 5; //可以在声明时初始化变量
+nochange = 10; //不允许修改
+
+const int days1[5] = {3, 18, 2521, 15, 30};//不允许修改的数组
+```
+
+在指针中使用`const`要复杂一些，有两种不同情况：指针本身为`const`还是限定指针指向的值为`const`。
+
+```c
+const float * pf; //*pf指向一个float类型的const值,指针指向能改
+float const * pf2; //同上
+float * const pt; //*pt是一个const指针,指向的地址不能修改
+const float * const ptr; //ptr既不能指向别处，它所指向的值也不能改
+```
+
+`const`的常见用法是声明为函数形参的指针。在被调函数中，将形参加上`const`关键词，可以保证主调函数调用时，传入的数组名或者地址不会被更改。
+
+```c
+void display(const int array[], int limit);//表明不能更改array指向的数据
+```
+在函数原型和函数头，形参声明`const int array[]`和`const int *array`相同。
+
+ANSI C库沿用了以下规则：如果一个指针仅用于给函数访问值，应将其声明为一个指向`const`限定类型的指针。如果要用指针更改主调函数中的数据，就不使用`const`关键字。ANSI C库中的`strcat()`函数用来将第二个字符串拼接到第一个字符串上，函数原型为：
+
+```C
+char *strcat(char * restrict s1, const char * restrict s2);
+/*更改了第一个字符，没更改第二个字符*/
+```
+
+使用全局变量很冒险，因为暴露了数据，程序的任何部分都能更改数据。如果在全局变量中使用`const`,就能避免这样的危险。
+
+然而，在文件间共享 const 数据要小心。可以采用两个策略。第一，遵循外部变量的常用规则，即在个文件中使用定义式声明，在其他文件中使用引用式声明(用extern关键字):
+
+```c
+/*file1.c--定义了一些外部const变量*/
+const doublePI=3.14159;
+const char*MONTHS[12] = {"January", "February"，"March", "April"，"May", "June", "July"，"August"，"September"，"October", "November", "December"}
+
+/*file2.c--使用定义在别处的外部const变量*/
+extern const double PI;
+extern const *MONTHS [];
+```
+
+另一种方案是，把const 变量放在一个头文件中，然后在其他文件中包含该头文件。
+
+```c
+/*constant.h--定义了一些外部const变量*/ 
+static const double PI=314159;
+static const char *MONTHS[12] ={"January", "February"，"March"，"April"，"May","June"，"July","August"，"September"，"October", "November"，"December"};
+
+/*filel.c--使用定义在别处的外部const 变量*/
+#include "constant.h"
+
+/*file2.--使用定义在别处的外部const 变量*/
+#include "constant.h"
+
+```
+
+这种方案必须在头文件中用关键字`static`声明全局const变量。
+
+如果去掉`static`,那么在file1.c和file2.c中包含constant.h将导致每个文件中都有一个相同标识符的定义式声明，相当于给每个文件提供了一个单独的数据副本。
+
+由于每个副本只对该文件可见，所以无法用这些数据和其他文件通信。
+
+头文件方案的好处是，方便你偷懒，不用惦记着在一个文件中使用定义式声明，在其他文件中使用引用式声明。所有的文件都只需包含同一个头文件即可。但它的缺点是，数据是重复的。
+
+### 12.5.2 volatile类型限定符
+
+`volatile`限定符告知计算机，代理 (而不是变量所在的程序)可以改变该变量的值。
+
+一般用于硬件地址以及在其他程序或同时运行的线程中共享数据。
+
+例如，一个地址上可能储存着当前的时钟时间，无论程序做什么，地址上的值都随时间的变化而改变。
+
+或者一个地址用于接受另一台计算机传入的信息。
+
+```c
+volatile int locl; //locl是一个易变的变量
+volatile int *ploc; //ploc是一个指向易变的指针
+```
+
+volatile的应用主要在于编译器的优化。
+
+```c
+val1=x;
+/*一些不使用x的代码*/
+val2=X;
+```
+
+> 高速缓存(caching):编译器会注意到以上代码使用了两次 ，但并未改变它的值。于是编译器把X的值临时储存在寄存器中，然后在 val2 需要使用时，才从寄存器中(而不是从原始内存位置上)读取值，以节约时间。
+> 
+> 但是如果其他代理在以上两条语句之间改变了x的值，就不能这样优化了。如果没有 volatile 关键字，编译器就不知道这种事情是否会发生。因此，为安全起见，编译器不会进行高速缓存。现在，如果声明中没有 volatile 关键字，编译器会假定变量的值在使用过程中不变，然后使用告诉缓存。
+{: .prompt-info }
+
+`const`和`volatile`可以同时使用。如果一个变量不会被本程序改变，通常可能给它加上`const`；外部程序或硬件可能改变这个量，禁止编译器优化，则会加上`volatile`。同时使用，如以下写法。
+
+```c
+volatile const int loc;
+const volatile int * ploc;
+```
+
+### 12.5.3 restrict类型限定符
+
+`restrict` 只能用于指针，表明该指针是访问数据对象的唯一且初始的方式。
+
+使用`restrict`涉及编译器的优化。
+
+```c
+int ar[10];
+int *par =ar;
+int * restrict restar = (int *) malloc(10 * sizeof(int));
+
+for (n = 0; n < 10; n++)
+{
+    restar[n]+= 5;
+    par[n]+= 5; 
+    restar[n]+= 3;
+    ar[n] *= 3;
+    par[n]+= 5;
+}
+```
+以上例子中，restar使用了`restric`关键词，指针是唯一且初始访问数据的方式，因此后面的for循环中，编译器可以合并对restar的操作，变成`restar[n] += 8`。
+
+par和ar都可以操作同一个数据内容，不能使用restrict，因此也不会优化。
+
+`restrict`限定符还可用于函数形参中的指针。这意味着编译器可以假定在函数体内其他标识符不会修改该指针指向的数据，而且编译器可以尝试对其优化，使其不做别的用途。
+
+例如，C 库有两个函数用于把一个位置上的字节拷贝到另一个位置。在C99中，这两个函数的原型是:
+
+### 12.5.4 _Atomic类型限定符（C11）
 
 
 
