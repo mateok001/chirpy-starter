@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
     }
 
     //设置输出
-    strcpy(name, argv[1], LEN-5);  //拷贝文件名
+    strncpy(name, argv[1], LEN-5);  //拷贝文件名,strncpy可以接受3个参数，不要用strcpy
     name[LEN-5] = '\0';
     strcat(name, ".red");  //在文件名后面添加后缀.red
     if ((out = fopen(name, "w")) == NULL)
