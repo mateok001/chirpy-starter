@@ -201,3 +201,11 @@ int main(int argc, char *argv[])
     return 0; 
 }
 ```
+
+
+
+### 13.4 文件I/O
+#### 13.4.1 fprintf()和fscanf()函数
+
+文件I/0函数 fprintf()和fscanf()函数的工作方式与printf()和 scanf()类似，区别在于前者需要用第1个参数指定待处理的文件，一般使用FILE指针。
+
